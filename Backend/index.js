@@ -15,7 +15,7 @@ app.use(express.json());
 
 app.use(
   cors({ 
-    origin: "http://localhost:5173" || "https://barun-ai-codeguard-bsv8.onrender.com",
+    origin: "http://localhost:5173" || "https://barun-ai-codeguard-hq7r.onrender.com",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
