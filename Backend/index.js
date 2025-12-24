@@ -14,8 +14,8 @@ const _dirname = path.resolve();
 app.use(express.json());
 
 app.use(
-  cors({
-    origin: "http://localhost:5173",
+  cors({ 
+    origin: "http://localhost:5173" || "https://barun-ai-codeguard-bsv8.onrender.com",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
