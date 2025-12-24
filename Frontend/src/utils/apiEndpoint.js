@@ -1,1 +1,1 @@
-export const USER_API_END_POINT = "https://barun-ai-codeguard-bsv8.onrender.com/api/v1/user";
+export const USER_API_END_POINT = "https://barun-ai-codeguard-hq7r.onrender.com/api/v1/user";
