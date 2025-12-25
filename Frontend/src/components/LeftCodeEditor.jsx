@@ -170,6 +170,7 @@ const LeftCodeEditor = () => {
     { value: "javascript", label: "JavaScript" },
     { value: "typescript", label: "TypeScript" },
     { value: "jsx", label: "React (JSX)" },
+
     { value: "python", label: "Python" },
     { value: "java", label: "Java" },
     { value: "c", label: "C" },
@@ -336,7 +337,12 @@ const LeftCodeEditor = () => {
               value={selectedLanguage}
               onChange={handleLanguageChange}
               options={options}
-              styles={darkMode ? darkSelectStyles : lightSelectStyles}
+              styles={{
+                ...(darkMode ? darkSelectStyles : lightSelectStyles),
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+              }}
+              menuPortalTarget={document.body}
+              menuPosition="fixed"
               className="min-w-[180px]"
             />
 
@@ -369,7 +375,7 @@ const LeftCodeEditor = () => {
               darkMode={darkMode}
             />
 
-            <div className="absolute bottom-1 left-0 right-1 lg:right-4 lg:bottom-2 z-20 pointer-events-none">
+            <div className="absolute bottom-1 left-0 right-1 lg:right-4 lg:bottom-2 z-20">
               <div className="flex justify-end">
                 <button
                   onClick={reviewCode}
