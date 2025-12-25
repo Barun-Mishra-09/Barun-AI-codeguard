@@ -13,42 +13,52 @@ export const aiGetReview = async (req, res) => {
       return res.status(400).json({ message: "Language is required" });
     }
 
+    const isSnippet =
+      code.split("\n").length < 200 || // small blocks
+      (!code.includes("class ") &&
+        !code.includes("function main") &&
+        !code.includes("public static void main"));
+
+    const isJSX =
+      /<\/?[A-Za-z]/.test(code) &&
+      (code.includes("className=") || code.includes("{"));
+
+    let effectiveLanguage = language;
+
+    if (language === "JavaScript" && isJSX) {
+      effectiveLanguage = "JSX / React";
+    }
+
     // Language-aware system prompt
     const systemPrompt = `
-IMPORTANT RULES:
-- Respond ONLY in valid GitHub-Flavored Markdown
-- Do NOT escape newlines
-- Do NOT wrap output in quotes
-- Do NOT ask questions
-- Be concise, professional, and UI-friendly
+You are a senior ${effectiveLanguage} developer and professional code reviewer.
 
-You are a senior ${language} developer and professional code reviewer.
+IMPORTANT:
+- The provided code MAY be a PARTIAL SNIPPET, not a full file
+- Missing imports, exports, or wrappers are acceptable
+- Review logic, structure, readability, and best practices
 
-STRICT LANGUAGE RULES:
-- Review ONLY ${language} code
-- If the provided code is NOT valid ${language}, you MUST return ONLY the section below
-- Do NOT provide fixes, suggestions, or refactored code for other languages
+STRICT RULE:
+- Do NOT reject partial snippets
+- Do NOT require full program structure
 
-LANGUAGE MISMATCH RESPONSE FORMAT (MANDATORY):
+ONLY reject if:
+- The syntax clearly belongs to a completely different language family
+
+If language mismatch occurs, respond ONLY with:
+
 ❌ Language mismatch detected
 
-The selected language is **${language}**, but the provided code is written in **<detected_language>**.
+Expected **${effectiveLanguage}**, but detected **<detected_language>**
 
 Key indicators:
-- <bullet point indicators>
+- <bullet points>
 
-No ${language} review was performed.
-
-👉 To continue:
-- Change the selected language to **<detected_language>**
-OR
-- Provide valid **${language}** source code
-
-NORMAL REVIEW FORMAT (ONLY IF CODE IS VALID ${language}):
+NORMAL REVIEW FORMAT:
 
 ## 🔍 Issues Found
 ## 🛠️ Fixes & Suggestions
-## ✨ Improved / Refactored Code (${language})
+## ✨ Improved Code (snippet-friendly)
 ## 📈 Why This Is Better
 ## 🚀 Extra Recommendations
 `;
